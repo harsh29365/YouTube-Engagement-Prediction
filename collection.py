@@ -23,22 +23,7 @@ uploads_playlist_id = response["items"][0]["contentDetails"]["relatedPlaylists"]
 video_ids = []
 next_page_token = None
 
-try:
-    request = youtube.playlistItems().list(
-        maxResults=1,
-        part="snippet",
-        playlistId=uploads_playlist_id
-    )
-
-    response = request.execute()
-    total_videos = response.get("pageInfo", {}).get("totalResults", 0)
-    print(f"Total videos to collect: {total_videos}")
-
-except Exception as e:
-    print(f"An error occurred: {e}")
-    total_videos = None
-
-progress_bar = tqdm(total=total_videos, desc="Collecting Video IDs", unit="videos") if total_videos else tqdm(desc="Collecting Video IDs", unit="videos")
+progress_bar = tqdm(desc="Collecting Video IDs", unit="videos")
 
 next_page_token = None
 while True:
@@ -67,9 +52,7 @@ while True:
 
 progress_bar.close()
 
-print(f"Total video IDs collected: {len(video_ids)}")
-
-progress_bar = tqdm(total=len(video_ids), desc="Collecting Video Details", unit="videos")
+progress_bar = tqdm(desc="Collecting Video Details", unit="videos")
 
 all_video_details = []
 
