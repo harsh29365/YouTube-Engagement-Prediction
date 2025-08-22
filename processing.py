@@ -11,13 +11,8 @@ from transformers import AutoImageProcessor, AutoModel
 
 data = pandas.read_csv("videos.csv")
 
-print(data.shape)
-print(data.head())
-
 data = data[data["views"] != 0].copy()
-
 data["timestamp"] = pandas.to_datetime(data["upload_date"]).astype("int64") // 10 ** 9
-print(data.head())
 
 def parse_duration(duration_str):
     if not duration_str:
@@ -34,22 +29,12 @@ def parse_duration(duration_str):
     return hours * 3600 + minutes * 60 + seconds
 
 data["duration(sec)"] = data["duration"].apply(parse_duration)
-print(data.head())
-
-zero_duration_count = (data["duration(sec)"] == 0).sum()
-print(f"Number of videos with 0 duration: {zero_duration_count}")
-
 data = data[data["duration(sec)"] != 0].copy()
-print(data.shape)
-
 data["likes_views_ratio"] = data["likes"] / data["views"]
-print(data.head())
 
 model = SentenceTransformer("sentence-transformers/all-mpnet-base-v2")
 title_embeddings = model.encode(data["title"].tolist(), show_progress_bar=True)
 data["title_embeddings"] = title_embeddings.tolist()
-
-print(data.head())
 
 session = requests.Session()
 
