@@ -85,7 +85,6 @@ for i in range(0, len(video_ids), 50):
     response = request.execute()
 
     for item in response.get("items", []):
-        thumbnail_data = item["snippet"]["thumbnails"]
 
         video_info = {
             "title": item["snippet"]["title"],
@@ -93,7 +92,7 @@ for i in range(0, len(video_ids), 50):
             "views": item["statistics"].get("viewCount", 0),
             "upload_date": item["snippet"]["publishedAt"],
             "duration": item["contentDetails"]["duration"],
-            "thumbnail_url": thumbnail_data.get("high", {}).get("url") if thumbnail_data else None
+            "thumbnail_url": item["snippet"].get("thumbnails", {}).get("high", {}).get("url")
         }
 
         all_video_details.append(video_info)
