@@ -56,15 +56,12 @@ def load_images(urls):
     with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
         results = executor.map(download_and_open_image, urls)
 
-        for image in tqdm(results, total=len(urls), desc="Downloading Images"):
+        for image in tqdm(results, desc="Downloading Images"):
             images.append(image)
 
     return images
 
 images = load_images(data["thumbnail_url"])
-
-none_count = sum(1 for image in images if image is None)
-print(f"Number of null values in the images list: {none_count}")
 
 processor = AutoImageProcessor.from_pretrained("facebook/dinov2-base")
 model = AutoModel.from_pretrained("facebook/dinov2-base")
@@ -95,12 +92,8 @@ def process_images(images, batch_size):
 thumbnail_embeddings = process_images(images, batch_size=64)
 data["thumbnail_embeddings"] = thumbnail_embeddings
 
-print(data.head())
 
-print(data.isnull().sum())
 data.dropna(inplace=True)
-
 data = data.drop(columns=["title", "likes", "views", "upload_date", "duration", "thumbnail_url"])
-print(data.head())
 
 data.to_parquet("processed_videos.parquet", engine="pyarrow")
