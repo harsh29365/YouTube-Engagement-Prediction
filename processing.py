@@ -68,9 +68,9 @@ model = AutoModel.from_pretrained("facebook/dinov2-base")
 model.eval()
 model.to("cuda")
 
-def image_to_vector_batch(images_batch):
+def images_to_vector(images_batch):
     inputs = processor(images=images_batch, return_tensors="pt").to("cuda")
-
+    
     with torch.no_grad():
         outputs = model(**inputs)
         image_vectors = outputs.last_hidden_state[:, 0, :]
@@ -82,8 +82,7 @@ def process_images(images, batch_size):
 
     for i in tqdm(range(0, len(images), batch_size), desc="Processing Batches"):
         batch = images[i:i + batch_size]
-        batch_vectors = image_to_vector_batch(batch)
-
+        batch_vectors = images_to_vector(batch)
         thumbnail_embeddings.append(batch_vectors)
 
     thumbnail_embeddings = torch.cat(thumbnail_embeddings, dim=0)
@@ -92,8 +91,6 @@ def process_images(images, batch_size):
 thumbnail_embeddings = process_images(images, batch_size=64)
 data["thumbnail_embeddings"] = thumbnail_embeddings
 
-
 data.dropna(inplace=True)
 data = data.drop(columns=["title", "likes", "views", "upload_date", "duration", "thumbnail_url"])
-
 data.to_parquet("processed_videos.parquet", engine="pyarrow")
