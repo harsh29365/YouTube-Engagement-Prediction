@@ -23,8 +23,6 @@ uploads_playlist_id = response["items"][0]["contentDetails"]["relatedPlaylists"]
 video_ids = []
 next_page_token = None
 
-print("Collecting video IDs...")
-
 try:
     request = youtube.playlistItems().list(
         maxResults=1,
