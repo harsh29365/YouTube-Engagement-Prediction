@@ -66,9 +66,8 @@ while True:
     time.sleep(0.1)
 
 progress_bar.close()
-print(f"Total video IDs collected: {len(video_ids)}")
 
-print(f"Total videos found: {len(video_ids)}")
+print(f"Total video IDs collected: {len(video_ids)}")
 
 progress_bar = tqdm(total=len(video_ids), desc="Collecting Video Details", unit="videos")
 
