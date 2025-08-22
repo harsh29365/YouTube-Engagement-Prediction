@@ -32,8 +32,6 @@ The project consists of three main Python scripts:
 
     Replace `YOUR_YOUTUBE_API_KEY` and `YOUR_CHANNEL_ID` with your actual values.
 
-2.  **Install Dependencies:** Run `pip install -r requirements.txt` (create a `requirements.txt` file listing all dependencies if you haven't already).
-
 ## Usage
 
 1.  **Collect Data:** Run `collection.py` to collect video data:
