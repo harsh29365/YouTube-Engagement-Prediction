@@ -6,6 +6,7 @@ from PIL import Image
 from tqdm import tqdm
 from io import BytesIO
 import concurrent.futures
+from isodate import parse_duration
 from sentence_transformers import SentenceTransformer
 from transformers import AutoImageProcessor, AutoModel
 
@@ -18,15 +19,11 @@ def parse_duration(duration_str):
     if not duration_str:
         return 0
 
-    match = re.match(r"PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?", duration_str)
-    if not match:
+    try:
+        duration = parse_duration(duration_str)
+        return int(duration.total_seconds())
+    except:
         return 0
-
-    hours = int(match.group(1)) if match.group(1) else 0
-    minutes = int(match.group(2)) if match.group(2) else 0
-    seconds = int(match.group(3)) if match.group(3) else 0
-
-    return hours * 3600 + minutes * 60 + seconds
 
 data["duration(sec)"] = data["duration"].apply(parse_duration)
 data = data[data["duration(sec)"] != 0].copy()
