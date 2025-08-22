@@ -93,7 +93,7 @@ for i in range(0, len(video_ids), 50):
             "views": item["statistics"].get("viewCount", 0),
             "upload_date": item["snippet"]["publishedAt"],
             "duration": item["contentDetails"]["duration"],
-            "thumbnail_url": thumbnail_data.get("default", {}).get("url") if thumbnail_data else None
+            "thumbnail_url": thumbnail_data.get("high", {}).get("url") if thumbnail_data else None
         }
 
         all_video_details.append(video_info)
