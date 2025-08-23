@@ -77,7 +77,7 @@ def load_images(urls):
 
 images = load_images(data["thumbnail_url"])
 
-processor = AutoImageProcessor.from_pretrained("facebook/dinov2-base")
+processor = AutoImageProcessor.from_pretrained("facebook/dinov2-base", use_fast=True)
 model = AutoModel.from_pretrained("facebook/dinov2-base")
 model.eval()
 model.to("cuda")
