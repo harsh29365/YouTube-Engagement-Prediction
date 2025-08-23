@@ -46,7 +46,7 @@ x_test_gpu = torch.tensor(x_test).cuda()
 y_pred = model.predict(x_test_gpu)
 r2 = r2_score(y_test, y_pred)
 
-print(f"R-squared score: {r2:.4f}")
+print(f"R-squared score: {r2:.4f}\n")
 
 seaborn.scatterplot(x=y_test, y=y_pred)
 matplotlib.pyplot.xlabel("Actual likes to views ratio")
