@@ -42,7 +42,7 @@ model.fit(
     verbose=False
 )
 
-x_test_gpu = torch.tensor(x_test).cuda()
+x_test_gpu = torch.from_numpy(x_test).to("cuda")
 y_pred = model.predict(x_test_gpu)
 r2 = r2_score(y_test, y_pred)
 
