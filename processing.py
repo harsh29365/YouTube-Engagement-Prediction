@@ -67,15 +67,20 @@ def download_and_open_image(image_url):
 
 def load_images(urls):
     images = []
+    valid_indices = []
+    
     with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
         results = executor.map(download_and_open_image, urls)
 
-        for image in tqdm(results, desc="Downloading Images"):
-            images.append(image)
+        for i, image in tqdm(enumerate(results), desc="Downloading Images"):
+            if image is not None:
+                images.append(image)
+                valid_indices.append(i)
 
-    return images
+    return images, valid_indices
 
-images = load_images(data["thumbnail_url"])
+images, valid_indices = load_images(data["thumbnail_url"])
+data = data.iloc[valid_indices].reset_index(drop=True)
 
 processor = AutoImageProcessor.from_pretrained("facebook/dinov2-base", use_fast=True)
 model = AutoModel.from_pretrained("facebook/dinov2-base")
