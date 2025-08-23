@@ -23,7 +23,7 @@ uploads_playlist_id = response["items"][0]["contentDetails"]["relatedPlaylists"]
 video_ids = []
 next_page_token = None
 
-progress_bar = tqdm(desc="Collecting Video IDs", unit="videos")
+progress_bar = tqdm(desc="Collecting Video IDs")
 
 next_page_token = None
 while True:
@@ -52,7 +52,7 @@ while True:
 
 progress_bar.close()
 
-progress_bar = tqdm(desc="Collecting Video Details", unit="videos")
+progress_bar = tqdm(desc="Collecting Video Details")
 
 all_video_details = []
 
@@ -84,10 +84,5 @@ for i in range(0, len(video_ids), 50):
     time.sleep(0.1)
 
 progress_bar.close()
-
-print(f"Collected details for {len(all_video_details)} videos")
-
 data = pandas.DataFrame(all_video_details)
-print(data.head())
-
 data.to_csv("videos.csv", index = False)
