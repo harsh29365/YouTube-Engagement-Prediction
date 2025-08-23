@@ -6,7 +6,6 @@ from PIL import Image
 from tqdm import tqdm
 from io import BytesIO
 import concurrent.futures
-from isodate import parse_duration
 from sentence_transformers import SentenceTransformer
 from transformers import AutoImageProcessor, AutoModel
 
@@ -15,15 +14,33 @@ data = pandas.read_csv("videos.csv")
 data = data[data["views"] != 0].copy()
 data["timestamp"] = pandas.to_datetime(data["upload_date"]).astype("int64") // 10 ** 9
 
-def parse_duration(duration_str):
-    if not duration_str:
-        return 0
-
-    try:
-        duration = parse_duration(duration_str)
-        return int(duration.total_seconds())
-    except:
-        return 0
+def parse_duration(iso_string):
+    if not isinstance(iso_string, str):
+        raise ValueError("Input must be a string")
+    
+    if not iso_string.startswith('PT'):
+        raise ValueError("ISO 8601 duration must start with 'PT'")
+    
+    duration_part = iso_string[2:]
+    
+    if not duration_part:
+        raise ValueError("Invalid ISO 8601 duration format")
+    
+    total_seconds = 0
+    
+    hours_match = re.search(r'(\d+)H', duration_part)
+    if hours_match:
+        total_seconds += int(hours_match.group(1)) * 3600
+    
+    minutes_match = re.search(r'(\d+)M', duration_part)
+    if minutes_match:
+        total_seconds += int(minutes_match.group(1)) * 60
+    
+    seconds_match = re.search(r'(\d+)S', duration_part)
+    if seconds_match:
+        total_seconds += int(seconds_match.group(1))
+    
+    return total_seconds
 
 data["duration(sec)"] = data["duration"].apply(parse_duration)
 data = data[data["duration(sec)"] != 0].copy()
